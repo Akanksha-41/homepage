@@ -1,0 +1,35 @@
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+const PORT = 3001;
+
+let jobs = [];
+
+app.use(bodyParser.json());
+
+// Endpoint to add a new job posting
+app.post('/jobs', (req, res) => {
+  const job = req.body;
+  jobs.push(job);
+  res.status(201).json({ message: 'Job posting added successfully' });
+});
+
+// Endpoint to update an existing job posting by ID
+app.put('/jobs/:id', (req, res) => {
+  const jobId = req.params.id;
+  const updatedJob = req.body;
+  jobs = jobs.map(job => 
+    job.id === jobId ? updatedJob : job
+  );
+  res.json({ message: 'Job posting updated successfully' });
+});
+
+// Endpoint to get all active job postings
+app.get('/jobs', (req, res) => {
+  const activeJobs = jobs.filter(job => job.status === 'active');
+  res.json(activeJobs);
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
