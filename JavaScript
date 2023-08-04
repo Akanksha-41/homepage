@@ -1,0 +1,34 @@
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+const PORT = 3000;
+
+let candidates = [];
+
+app.use(bodyParser.json());
+
+// Endpoint to add a new candidate
+app.post('/candidates', (req, res) => {
+  const candidate = req.body;
+  candidates.push(candidate);
+  res.status(201).json({ message: 'Candidate added successfully' });
+});
+
+// Endpoint to update an existing candidate by ID
+app.put('/candidates/:id', (req, res) => {
+  const candidateId = req.params.id;
+  const updatedCandidate = req.body;
+  candidates = candidates.map(candidate => 
+    candidate.id === candidateId ? updatedCandidate : candidate
+  );
+  res.json({ message: 'Candidate updated successfully' });
+});
+
+// Endpoint to get all candidates
+app.get('/candidates', (req, res) => {
+  res.json(candidates);
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
